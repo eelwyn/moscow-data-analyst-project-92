@@ -18,18 +18,20 @@ inner join products as pr
 on sa.product_id = pr.product_id
 group by to_char (sa.sale_date, 'YYYY-MM') order by selling_month asc;
 
---- запрос 3: отчет о покупателях, чья первая покупка была с акционнытми товарами
+--- запрос 3: отчет о покупателях, чья первая покупка была с акционными товарами
 with bonus_sales as (
-select sa.customer_id as customer_id, min(sale_date) as min_sd
+select sa.customer_id as customer_id, min(sale_date) as sale_date
 from sales as sa 
 inner join products as pr
 on sa.product_id = pr.product_id
 where pr.price = 0
 group by sa.customer_id)
-select concat (cu.first_name, ' ', cu.last_name) as customer, sa.sale_date, concat (em.first_name, ' ', em.last_name) as seller
-from customers as cu 
-inner join sales as sa on cu.customer_id = sa.customer_id
+select distinct
+concat (cu.first_name, ' ', cu.last_name) as customer, bs.sale_date, concat (em.first_name, ' ', em.last_name) as seller
+from bonus_sales as bs inner join customers as cu 
+on cu.customer_id = bs.customer_id
+inner join sales as sa on 
+sa.customer_id = bs.customer_id and sa.sale_date = bs.sale_date
 inner join employees as em
 on em.employee_id = sa.sales_person_id
-inner join bonus_sales as bs on sa.customer_id = bs.customer_id
-order by sa.customer_id;
+order by customer;
