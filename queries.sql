@@ -31,7 +31,7 @@ order by average_income asc;
 
 ---запрос 3: продажи продацом по дням недели
 select concat (em.first_name, ' ', em.last_name) as seller,
-regexp_replace(sa.day_of_week, '   ', '') as day_of_week,
+sa.day_of_week,
 floor (sum (sa.quantity * pr.price)) as income 
 from employees as em
 left join (select to_char (sa.sale_date-1, 'd' ) as num, to_char (sa.sale_date, 'day' ) as day_of_week, sales_person_id, 
@@ -41,4 +41,3 @@ on em.employee_id = sa.sales_person_id
 inner join products as pr on sa.product_id = pr.product_id
 group by concat (em.first_name, ' ', em.last_name), sa.day_of_week, sa.num
 order by sa.num;
-
