@@ -100,5 +100,3 @@ inner join sales as sa
 inner join employees as em
     on sa.sales_person_id = em.employee_id
 order by bs.customer_id;
-
-
