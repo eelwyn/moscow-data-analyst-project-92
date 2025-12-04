@@ -96,17 +96,14 @@ with bonus_sales as (
     group by sa.customer_id
 ),
 
-    select
-        bs.sale_date,
-        concat(cu.first_name, ' ', cu.last_name) as customer,
-        concat(em.first_name, ' ', em.last_name) as seller
-    from bonus_sales as bs inner join customers as cu
-        on bs.customer_id = cu.customer_id
-    inner join sales as sa
-        on bs.customer_id = sa.customer_id and bs.sale_date = sa.sale_date
-    inner join employees as em
-        on sa.sales_person_id = em.employee_id
-    order by bs.customer_id;
-
-
-
+select
+    bs.sale_date,
+    concat(cu.first_name, ' ', cu.last_name) as customer,
+    concat(em.first_name, ' ', em.last_name) as seller
+from bonus_sales as bs inner join customers as cu
+    on bs.customer_id = cu.customer_id
+inner join sales as sa
+    on bs.customer_id = sa.customer_id and bs.sale_date = sa.sale_date
+inner join employees as em
+    on sa.sales_person_id = em.employee_id
+order by bs.customer_id;
