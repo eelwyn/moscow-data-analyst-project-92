@@ -37,41 +37,32 @@ order by sa.av_income asc;
 
 ---запрос 3: продажи по дням недели в разрезе продавцов
 select
-    sa.day_of_week,
     concat(em.first_name, ' ', em.last_name) as seller,
+    to_char(sa.sale_date, 'day') as day_of_week,
     floor(sum(sa.quantity * pr.price)) as income
 from employees as em
-left join (select
-    sa.sales_person_id,
-    sa.product_id,
-    sa.quantity,
-    to_char(sa.sale_date - 1, 'd') as num,
-    to_char(sa.sale_date, 'day') as day_of_week
-from sales as sa
-order by num) as sa
-    on em.employee_id = sa.sales_person_id
+left join sales as sa on em.employee_id = sa.sales_person_id
 inner join products as pr on sa.product_id = pr.product_id
-group by concat(em.first_name, ' ', em.last_name), sa.day_of_week, sa.num
-order by sa.num;
+group by
+    concat(em.first_name, ' ', em.last_name),
+    to_char(sa.sale_date, 'day'),
+    extract(isodow from sa.sale_date)
+order by extract(isodow from sa.sale_date);
 
 ---запрос 4: количество покупателей в возрастных группах
-with customers_age as (
-    select
-        customer_id,
-        case
-            when age between '16' and '25' then '16-25'
-            when age between '26' and '40' then '26-40'
-            when age >= '41' then '40+'
-        end as age_category
-    from customers
-)
-
 select
-    ca.age_category,
-    count(distinct cu.customer_id) as age_count
-from customers_age as ca inner join customers as cu
-    on ca.customer_id = cu.customer_id
-group by ca.age_category;
+    case
+        when age between '16' and '25' then '16-25'
+        when age between '26' and '40' then '26-40'
+        when age >= '41' then '40+'
+    end as age_category,
+    count(customer_id) as age_count
+from customers
+group by case
+    when age between '16' and '25' then '16-25'
+    when age between '26' and '40' then '26-40'
+    when age >= '41' then '40+'
+end;
 
 --- запрос 5: количество уник.покупателей и выручка в разрезе месяца и года
 select
@@ -107,3 +98,4 @@ inner join sales as sa
 inner join employees as em
     on sa.sales_person_id = em.employee_id
 order by bs.customer_id;
+
