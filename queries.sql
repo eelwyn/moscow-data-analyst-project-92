@@ -27,13 +27,13 @@ all_avg as (
 )
 
 select
-    sa.av_income,
+    sa.a_income,
     concat(em.first_name, ' ', em.last_name) as seller
 from employees as em
 inner join seller_avg as sa on em.employee_id = sa.sales_person_id
 cross join all_avg as aa
 where sa.av_income < aa.avg_income
-order by av_income asc;
+order by sa.av_income asc;
 
 ---запрос 3: продажи по дням недели в разрезе продавцов
 select
@@ -73,10 +73,10 @@ from customers_age as ca inner join customers as cu
     on ca.customer_id = cu.customer_id
 group by ca.age_category;
 
---- запрос 5: количество уникальных покупателей и выручка в разрезе месяца и года
+--- запрос 5: количество уник.покупателей и выручка в разрезе месяца и года
 select
     to_char(sa.sale_date, 'YYYY-MM') as selling_month,
-    count(distinct customer_id) as total_customers,
+    count(distinct sa.customer_id) as total_customers,
     floor(sum(sa.quantity * pr.price)) as income
 from sales as sa
 inner join products as pr
@@ -88,7 +88,7 @@ order by selling_month asc;
 with bonus_sales as (
     select
         sa.customer_id,
-        min(sale_date) as sale_date
+        min(sa.sale_date) as sale_date
     from sales as sa
     inner join products as pr
         on sa.product_id = pr.product_id
@@ -112,3 +112,5 @@ t_final as (
 )
 
 select distinct t.* from t_final as t;
+
+
