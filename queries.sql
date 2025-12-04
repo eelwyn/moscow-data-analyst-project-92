@@ -1,10 +1,10 @@
 ---запрос 1: 10 лучших продавцов по сумме продаж
 select
     concat(em.first_name, ' ', em.last_name) as seller,
-    count(sa.sales_id) as operations,
-    floor(sum(sa.quantity * pr.price)) as income
+     count(sa.sales_id) as operations,
+         floor(sum(sa.quantity * pr.price)) as income
     from employees as em
-left join sales as sa on em.employee_id = sa.sales_person_id
+    left join sales as sa on em.employee_id = sa.sales_person_id
 inner join products as pr on sa.product_id = pr.product_id
 group by concat(em.first_name, ' ', em.last_name)
 order by income desc
@@ -51,5 +51,6 @@ order by num) as sa
 inner join products as pr on sa.product_id = pr.product_id
 group by concat(em.first_name, ' ', em.last_name), sa.day_of_week, sa.num
 order by sa.num;
+
 
 
