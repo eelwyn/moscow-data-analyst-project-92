@@ -14,7 +14,7 @@ limit 10;
 with seller_avg as (
     select
         sa.sales_person_id,
-        floor(avg(sa.quantity * pr.price)) as average_income
+        floor(avg(sa.quantity * pr.price)) as av_income
     from sales as sa
     inner join products as pr on sa.product_id = pr.product_id
     group by sa.sales_person_id
@@ -25,13 +25,13 @@ all_avg as (
     inner join products as pr on sa.product_id = pr.product_id
 )
 select
-    sa.average_income,
+    sa.av_income,
     concat(em.first_name, ' ', em.last_name) as seller
 from employees as em
 inner join seller_avg as sa on em.employee_id = sa.sales_person_id
 cross join all_avg as aa
-where sa.average_income < aa.avg_income
-order by average_income asc;
+where sa.av_income < aa.avg_income
+order by av_income asc;
 
 ---запрос 3: продажи по дням недели в разрезе продавцов
 select
