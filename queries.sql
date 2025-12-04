@@ -109,6 +109,6 @@ t_final as (
         on sa.sales_person_id = em.employee_id
     order by bs.customer_id
 )
-
 select distinct t.* from t_final as t;
+
 
