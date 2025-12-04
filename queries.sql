@@ -82,7 +82,8 @@ inner join products as pr
 on sa.product_id = pr.product_id
 where pr.price = 0
 group by sa.customer_id)
-select distinct
+, t_final as (
+select 
 concat (cu.first_name, ' ', cu.last_name) as customer, bs.sale_date, concat (em.first_name, ' ', em.last_name) as seller
 from bonus_sales as bs inner join customers as cu 
 on cu.customer_id = bs.customer_id
@@ -90,5 +91,6 @@ inner join sales as sa on
 sa.customer_id = bs.customer_id and sa.sale_date = bs.sale_date
 inner join employees as em
 on em.employee_id = sa.sales_person_id
-order by customer;
-
+order by bs.customer_id
+) 
+select distinct t.* from t_final t;
