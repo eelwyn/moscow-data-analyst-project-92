@@ -104,13 +104,11 @@ t_final as (
     from bonus_sales as bs inner join customers as cu
         on bs.customer_id = cu.customer_id
     inner join sales as sa
-        on
-            bs.customer_id = sa.customer_id and bs.sale_date = sa.sale_date
+        on bs.customer_id = sa.customer_id and bs.sale_date = sa.sale_date
     inner join employees as em
         on sa.sales_person_id = em.employee_id
     order by bs.customer_id
 )
 
 select distinct t.* from t_final as t;
-
 
